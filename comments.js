@@ -1,25 +1,34 @@
-// create a web server
+// Create a web server
+// 1. load http module
+var http = require('http');
+var fs = require('fs');
+var url = require('url');
+var path = require('path');
 
-// import the express module
-const express = require('express');
+// 2. create a server
+http.createServer(function (request, response) {
+    var pathname = url.parse(request.url).pathname;
+    var ext = path.extname(pathname);
+    var mimeType = {
+        '.html': 'text/html',
+        '.css': 'text/css',
+        '.js': 'text/javascript',
+        '.gif': 'image/gif',
+        '.jpg': 'image/jpeg'
+    };
 
-// create an express app
-const app = express();
+    if (pathname === '/') {
+        pathname = '/index.html';
+    }
 
-// set the port
-const port = 3000;
-
-// create a route for /
-app.get('/', (req, res) => {
-  res.send('Hello, World!');
-});
-
-// create a route for /comments
-app.get('/comments', (req, res) => {
-  res.send('Comments');
-});
-
-// start the server
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
-});
+    fs.readFile(__dirname + pathname, function (err, data) {
+        if (err) {
+            response.writeHead(500, {'Content-Type': 'text/plain'});
+            response.end('500 - Internal Error');
+        } else {
+            response.writeHead(200, {'Content-Type': mimeType[ext] || 'text/plain'});
+            response.end(data);
+        }
+    });
+}).listen(3000, function () {
+    console.log('Server running at http://
