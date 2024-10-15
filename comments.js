@@ -1,19 +1,25 @@
 // create a web server
-// 1. create a web server
-// 2. create a route for /comments
-// 3. return a list of comments
 
-// 1. create a web server
-const http = require('http');
-const server = http.createServer((req, res) => {
-  // 2. create a route for /comments
-  if (req.url === '/comments') {
-    // 3. return a list of comments
-    res.write(JSON.stringify([{ id: 1, body: 'comment 1' }, { id: 2, body: 'comment 2' }]));
-  } else {
-    res.write('Not found');
-  }
-  res.end();
+// import the express module
+const express = require('express');
+
+// create an express app
+const app = express();
+
+// set the port
+const port = 3000;
+
+// create a route for /
+app.get('/', (req, res) => {
+  res.send('Hello, World!');
 });
-server.listen(3000);
-console.log('Server is listening on port 3000');
+
+// create a route for /comments
+app.get('/comments', (req, res) => {
+  res.send('Comments');
+});
+
+// start the server
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
+});
